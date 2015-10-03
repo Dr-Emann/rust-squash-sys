@@ -4,6 +4,8 @@ use object::{SquashObject, SquashDestroyNotify};
 use codec::SquashCodec;
 use status::SquashStatus;
 
+pub use self::SquashOptionType::*;
+
 #[repr(C)]
 pub enum SquashOptionType {
     SQUASH_OPTION_TYPE_NONE        = 0,
