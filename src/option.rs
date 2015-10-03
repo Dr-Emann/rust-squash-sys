@@ -7,6 +7,7 @@ use status::SquashStatus;
 pub use self::SquashOptionType::*;
 
 #[repr(C)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum SquashOptionType {
     SQUASH_OPTION_TYPE_NONE        = 0,
     SQUASH_OPTION_TYPE_BOOL        = 1,
