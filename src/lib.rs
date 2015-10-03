@@ -1,3 +1,5 @@
+#![cfg_attr(feature="nightly", feature(const_fn))]
+
 extern crate libc;
 
 #[macro_use]
