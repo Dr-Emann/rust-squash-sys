@@ -68,19 +68,19 @@ pub struct SquashOptionValue {
 }
 
 impl SquashOptionValue {
-    pub unsafe fn string_value(&mut self) -> *mut *mut c_char {
+    pub unsafe fn string_value(&self) -> *const *const c_char {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn int_value(&mut self) -> *mut c_int {
+    pub unsafe fn int_value(&self) -> *const c_int {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn bool_value(&mut self) -> *mut u8 {
+    pub unsafe fn bool_value(&self) -> *const bool {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn size_value(&mut self) -> *mut size_t {
+    pub unsafe fn size_value(&self) -> *const size_t {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
@@ -100,19 +100,19 @@ pub struct SquashOptionInfoUnion {
 }
 
 impl SquashOptionInfoUnion {
-    pub unsafe fn enum_string(&mut self) -> *mut SquashOptionInfoEnumString {
+    pub unsafe fn enum_string(&self) -> *const SquashOptionInfoEnumString {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn enum_int(&mut self) -> *mut SquashOptionInfoEnumInt {
+    pub unsafe fn enum_int(&self) -> *const SquashOptionInfoEnumInt {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn range_int(&mut self) -> *mut SquashOptionInfoRangeInt {
+    pub unsafe fn range_int(&self) -> *const SquashOptionInfoRangeInt {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn range_size(&mut self) -> *mut SquashOptionInfoRangeSize {
+    pub unsafe fn range_size(&self) -> *const SquashOptionInfoRangeSize {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
