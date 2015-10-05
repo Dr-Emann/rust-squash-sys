@@ -64,7 +64,7 @@ pub struct SquashOptionInfoRangeSize {
 
 #[repr(C)]
 pub struct SquashOptionValue {
-    _union_data_: [u64; 1],
+    _union_data_: [size_t; 1],
 }
 
 impl SquashOptionValue {
@@ -96,7 +96,7 @@ pub struct SquashOptionInfo {
 
 #[repr(C)]
 pub struct SquashOptionInfoUnion {
-    _union_data_: [u64; 4],
+    _union_data_: [size_t; 4],
 }
 
 impl SquashOptionInfoUnion {
