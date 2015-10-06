@@ -39,10 +39,10 @@ extern {
                                                 options: *mut SquashOptions)
      -> *mut SquashFile;
     pub fn squash_file_read(file: *mut SquashFile,
-                            decompressed_length: *mut size_t,
+                            decompressed_size: *mut size_t,
                             decompressed: *mut uint8_t) -> SquashStatus;
     pub fn squash_file_write(file: *mut SquashFile,
-                             uncompressed_length: size_t,
+                             uncompressed_size: size_t,
                              uncompressed: *const uint8_t) -> SquashStatus;
     pub fn squash_file_flush(file: *mut SquashFile) -> SquashStatus;
     pub fn squash_file_close(file: *mut SquashFile) -> SquashStatus;
@@ -51,7 +51,7 @@ extern {
     pub fn squash_file_eof(file: *mut SquashFile) -> bool;
     pub fn squash_file_lock(file: *mut SquashFile);
     pub fn squash_file_unlock(file: *mut SquashFile);
-    pub fn squash_file_read_unlocked(file: *mut SquashFile, decompressed_length: *mut size_t, decompressed: *mut uint8_t) -> SquashStatus;
-    pub fn squash_file_write_unlocked(file: *mut SquashFile, uncompressed_length: size_t, uncompressed: *const uint8_t) -> SquashStatus;
+    pub fn squash_file_read_unlocked(file: *mut SquashFile, decompressed_size: *mut size_t, decompressed: *mut uint8_t) -> SquashStatus;
+    pub fn squash_file_write_unlocked(file: *mut SquashFile, uncompressed_size: size_t, uncompressed: *const uint8_t) -> SquashStatus;
     pub fn squash_file_flush_unlocked(file: *mut SquashFile) -> SquashStatus;
 }
