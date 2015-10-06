@@ -1,14 +1,17 @@
 [package]
 name = "squash-sys"
-version = "0.1.0"
+version = "0.8.0"
 authors = ["Zachary Dremann <dremann@gmail.com>"]
+description = "rust bindings to the squash compression library"
+keywords = ["squash", "compress", "decompress", "xz", "gzip"]
+license = "mit"
 
-links = "libsquash0.7"
+links = "libsquash0.8"
 build = "build.rs"
 
 [dependencies]
-libc = "*"
+libc = "0.1.10"
 bitflags = "0.3.2"
 
 [build-dependencies]
-pkg-config = "0.3.5"
+pkg-config = "0.3.6"

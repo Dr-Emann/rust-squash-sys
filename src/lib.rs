@@ -15,6 +15,7 @@ pub mod stream;
 pub mod version;
 pub mod file;
 pub mod context;
+pub mod splice;
 
 pub use object::*;
 pub use codec::*;
@@ -26,6 +27,7 @@ pub use stream::*;
 pub use version::*;
 pub use file::*;
 pub use context::*;
+pub use splice::*;
 
 #[cfg(test)]
 mod test {

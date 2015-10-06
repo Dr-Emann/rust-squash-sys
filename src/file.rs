@@ -3,7 +3,6 @@ use libc::{c_char, size_t, uint8_t, FILE};
 use codec::SquashCodec;
 use option::SquashOptions;
 use status::SquashStatus;
-use stream::SquashStreamType;
 
 pub enum SquashFile { }
 
@@ -46,28 +45,13 @@ extern {
                              uncompressed_length: size_t,
                              uncompressed: *const uint8_t) -> SquashStatus;
     pub fn squash_file_flush(file: *mut SquashFile) -> SquashStatus;
-    pub fn squash_splice(codec: *const c_char,
-                         stream_type: SquashStreamType, fp_out: *mut FILE,
-                         fp_in: *mut FILE, length: size_t, ...)
-     -> SquashStatus;
-    pub fn squash_splice_codec(codec: *mut SquashCodec,
-                               stream_type: SquashStreamType,
-                               fp_out: *mut FILE, fp_in: *mut FILE,
-                               length: size_t, ...) -> SquashStatus;
-    pub fn squash_splice_with_options(codec: *const c_char,
-                                      stream_type: SquashStreamType,
-                                      fp_out: *mut FILE, fp_in: *mut FILE,
-                                      length: size_t,
-                                      options: *mut SquashOptions)
-     -> SquashStatus;
-    pub fn squash_splice_codec_with_options(codec: *mut SquashCodec,
-                                            stream_type: SquashStreamType,
-                                            fp_out: *mut FILE,
-                                            fp_in: *mut FILE, length: size_t,
-                                            options: *mut SquashOptions)
-     -> SquashStatus;
     pub fn squash_file_close(file: *mut SquashFile) -> SquashStatus;
     pub fn squash_file_free(file: *mut SquashFile, fp: *mut *mut FILE)
      -> SquashStatus;
     pub fn squash_file_eof(file: *mut SquashFile) -> bool;
+    pub fn squash_file_lock(file: *mut SquashFile);
+    pub fn squash_file_unlock(file: *mut SquashFile);
+    pub fn squash_file_read_unlocked(file: *mut SquashFile, decompressed_length: *mut size_t, decompressed: *mut uint8_t) -> SquashStatus;
+    pub fn squash_file_write_unlocked(file: *mut SquashFile, uncompressed_length: size_t, uncompressed: *const uint8_t) -> SquashStatus;
+    pub fn squash_file_flush_unlocked(file: *mut SquashFile) -> SquashStatus;
 }

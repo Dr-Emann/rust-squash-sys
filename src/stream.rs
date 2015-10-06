@@ -81,7 +81,4 @@ extern {
         options: *mut SquashOptions,
         destroy_notify: SquashDestroyNotify) -> ();
     pub fn squash_stream_destroy(stream: *mut c_void) -> ();
-    pub fn squash_stream_yield(
-        stream: *mut SquashStream,
-        status: SquashStatus) -> SquashOperation;
 }

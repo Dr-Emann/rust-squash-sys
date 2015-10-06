@@ -7,14 +7,15 @@ use stream::{SquashStreamType, SquashStream, SquashOperation};
 pub enum SquashCodec { }
 
 pub type SquashCodecForeachFunc = Option<extern fn(*mut SquashCodec, *mut c_void)>;
+pub type SquashReadFunc = Option<extern fn (*mut size_t, *mut uint8_t, *mut c_void) -> SquashStatus>;
+pub type SquashWriteFunc = Option<extern fn (*mut size_t, *const uint8_t, *mut c_void) -> SquashStatus>;
 
 bitflags! {
     #[repr(C)]
     flags SquashCodecInfo: c_int {
         const SQUASH_CODEC_INFO_INVALID                 = 0,
-        const SQUASH_CODEC_INFO_CAN_FLUSH               = 1<<0,
-        const SQUASH_CODEC_INFO_RUN_IN_THREAD           = 1<<1,
-        const SQUASH_CODEC_INFO_DECOMPRESS_SAFE         = 1 <<  2,
+        const SQUASH_CODEC_INFO_CAN_FLUSH               = 1 << 0,
+        const SQUASH_CODEC_INFO_DECOMPRESS_SAFE         = 1 << 1,
 
         const SQUASH_CODEC_INFO_AUTO_MASK               = 0x00ff0000,
         const SQUASH_CODEC_INFO_VALID                   = 1 << 16,
@@ -37,6 +38,13 @@ pub struct SquashCodecImpl {
     pub process_stream: Option<extern "C" fn(
         stream: *mut SquashStream,
         operation: SquashOperation) -> SquashStatus>,
+    pub splice: Option<extern "C" fn(
+        codec: *mut SquashCodec,
+        options: *mut SquashOptions,
+        stream_type: SquashStreamType,
+        read_cb: SquashReadFunc,
+        write_cb: SquashWriteFunc,
+        user_data: *mut c_void) -> SquashStatus>,
     pub decompress_buffer: Option<extern "C" fn(
         codec: *mut SquashCodec,
         decompressed_length: *mut size_t,
