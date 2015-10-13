@@ -1,12 +1,12 @@
 use libc::{c_char, c_uint};
 
 pub const SQUASH_VERSION_MAJOR: c_uint    = 0;
-pub const SQUASH_VERSION_MINOR: c_uint    = 7;
+pub const SQUASH_VERSION_MINOR: c_uint    = 8;
 pub const SQUASH_VERSION_REVISION: c_uint = 0;
 
-pub const SQUASH_VERSION_API: &'static [u8] = b"0.7";
+pub const SQUASH_VERSION_API: &'static [u8] = b"0.8";
 #[cfg(not(feature="nightly"))]
-pub const SQUASH_VERSION_CURRENT: c_uint = 0x000700; // hard coded until constfn is stable
+pub const SQUASH_VERSION_CURRENT: c_uint = 0x000800; // hard coded until constfn is stable
 #[cfg(feature="nightly")]
 pub const SQUAHS_VERSION_CURRENT: c_uint = SQUASH_VERSION(SQUASH_VERSION_MAJOR, SQUAH_VERSION_MINOR, SQUASH_VERSION_REVISION);
 

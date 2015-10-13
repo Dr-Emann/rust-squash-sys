@@ -68,19 +68,19 @@ pub struct SquashOptionValue {
 }
 
 impl SquashOptionValue {
-    pub unsafe fn string_value(&self) -> *const *const c_char {
+    pub unsafe fn string_value(&self) -> *mut *const c_char {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn int_value(&self) -> *const c_int {
+    pub unsafe fn int_value(&self) -> *mut c_int {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn bool_value(&self) -> *const bool {
+    pub unsafe fn bool_value(&self) -> *mut bool {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
-    pub unsafe fn size_value(&self) -> *const size_t {
+    pub unsafe fn size_value(&self) -> *mut size_t {
         let raw: *mut u8 = ::std::mem::transmute(&self._union_data_);
         ::std::mem::transmute(raw.offset(0))
     }
