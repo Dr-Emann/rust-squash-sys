@@ -44,6 +44,9 @@ extern {
     pub fn squash_file_write(file: *mut SquashFile,
                              uncompressed_size: size_t,
                              uncompressed: *const uint8_t) -> SquashStatus;
+    pub fn squash_file_printf(file: *mut SquashFile,
+                              format: *const c_char,
+                              ...) -> SquashStatus;
     pub fn squash_file_flush(file: *mut SquashFile) -> SquashStatus;
     pub fn squash_file_close(file: *mut SquashFile) -> SquashStatus;
     pub fn squash_file_free(file: *mut SquashFile, fp: *mut *mut FILE)
