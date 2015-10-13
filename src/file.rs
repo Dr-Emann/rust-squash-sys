@@ -49,6 +49,7 @@ extern {
     pub fn squash_file_free(file: *mut SquashFile, fp: *mut *mut FILE)
      -> SquashStatus;
     pub fn squash_file_eof(file: *mut SquashFile) -> bool;
+    pub fn squash_file_error(file: *mut SquashFile) -> SquashStatus;
     pub fn squash_file_lock(file: *mut SquashFile);
     pub fn squash_file_unlock(file: *mut SquashFile);
     pub fn squash_file_read_unlocked(file: *mut SquashFile, decompressed_size: *mut size_t, decompressed: *mut uint8_t) -> SquashStatus;
