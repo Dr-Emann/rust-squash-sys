@@ -1,9 +1,12 @@
-use libc::{c_char, c_void, size_t, uint8_t};
+use libc::{c_char, c_int, c_void, size_t, uint8_t};
 
 use object::{SquashObject, SquashDestroyNotify};
 use codec::SquashCodec;
 use option::SquashOptions;
 use status::SquashStatus;
+
+pub use self::SquashStreamType::*;
+pub use self::SquashOperation::*;
 
 pub enum SquashStreamPrivate { }
 
@@ -23,15 +26,13 @@ pub enum SquashOperation {
     SQUASH_OPERATION_TERMINATE = 4,
 }
 
-#[repr(C)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum SquashStreamState {
-    SQUASH_STREAM_STATE_IDLE      = 0,
-    SQUASH_STREAM_STATE_RUNNING   = 1,
-    SQUASH_STREAM_STATE_FLUSHING  = 2,
-    SQUASH_STREAM_STATE_FINISHING = 3,
-    SQUASH_STREAM_STATE_FINISHED  = 4,
-}
+pub type SquashStreamState = c_int;
+
+pub const SQUASH_STREAM_STATE_IDLE: SquashStreamState      = 0;
+pub const SQUASH_STREAM_STATE_RUNNING: SquashStreamState   = 1;
+pub const SQUASH_STREAM_STATE_FLUSHING: SquashStreamState  = 2;
+pub const SQUASH_STREAM_STATE_FINISHING: SquashStreamState = 3;
+pub const SQUASH_STREAM_STATE_FINISHED: SquashStreamState  = 4;
 
 #[repr(C)]
 pub struct SquashStream {

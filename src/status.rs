@@ -1,28 +1,23 @@
-use libc::{c_char};
+use libc::{c_char, c_int};
 
-pub use self::SquashStatus::*;
+pub type SquashStatus = c_int;
 
-#[repr(C)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum SquashStatus {
-    SQUASH_OK                    =  1,
-    SQUASH_PROCESSING            =  2,
-    SQUASH_END_OF_STREAM         =  3,
-    
-    SQUASH_FAILED                = -1,
-    SQUASH_UNABLE_TO_LOAD        = -2,
-    SQUASH_BAD_PARAM             = -3,
-    SQUASH_BAD_VALUE             = -4,
-    SQUASH_MEMORY                = -5,
-    SQUASH_BUFFER_FULL           = -6,
-    SQUASH_BUFFER_EMPTY          = -7,
-    SQUASH_STATE                 = -8,
-    SQUASH_INVALID_OPERATION     = -9,
-    SQUASH_NOT_FOUND             = -10,
-    SQUASH_INVALID_BUFFER        = -11,
-    SQUASH_IO                    = -12,
-    SQUASH_RANGE                 = -13,
-}
+pub const SQUASH_OK: SquashStatus                    =  1;
+pub const SQUASH_PROCESSING: SquashStatus            =  2;
+pub const SQUASH_END_OF_STREAM: SquashStatus         =  3;
+pub const SQUASH_FAILED: SquashStatus                = -1;
+pub const SQUASH_UNABLE_TO_LOAD: SquashStatus        = -2;
+pub const SQUASH_BAD_PARAM: SquashStatus             = -3;
+pub const SQUASH_BAD_VALUE: SquashStatus             = -4;
+pub const SQUASH_MEMORY: SquashStatus                = -5;
+pub const SQUASH_BUFFER_FULL: SquashStatus           = -6;
+pub const SQUASH_BUFFER_EMPTY: SquashStatus          = -7;
+pub const SQUASH_STATE: SquashStatus                 = -8;
+pub const SQUASH_INVALID_OPERATION: SquashStatus     = -9;
+pub const SQUASH_NOT_FOUND: SquashStatus             = -10;
+pub const SQUASH_INVALID_BUFFER: SquashStatus        = -11;
+pub const SQUASH_IO: SquashStatus                    = -12;
+pub const SQUASH_RANGE: SquashStatus                 = -13;
 
 extern {
     pub fn squash_status_to_string(status: SquashStatus) -> *const c_char;

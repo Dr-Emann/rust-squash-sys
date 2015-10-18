@@ -4,23 +4,19 @@ use object::{SquashObject, SquashDestroyNotify};
 use codec::SquashCodec;
 use status::SquashStatus;
 
-pub use self::SquashOptionType::*;
+pub type SquashOptionType = c_int;
 
-#[repr(C)]
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum SquashOptionType {
-    SQUASH_OPTION_TYPE_NONE        = 0,
-    SQUASH_OPTION_TYPE_BOOL        = 1,
-    SQUASH_OPTION_TYPE_STRING      = 2,
-    SQUASH_OPTION_TYPE_INT         = 3,
-    SQUASH_OPTION_TYPE_SIZE        = 4,
-    
-    SQUASH_OPTION_TYPE_ENUM_STRING = (16 | 2),
-    SQUASH_OPTION_TYPE_ENUM_INT    = (16 | 3),
-    
-    SQUASH_OPTION_TYPE_RANGE_INT   = (32 | 3),
-    SQUASH_OPTION_TYPE_RANGE_SIZE  = (32 | 4),
-}
+pub const SQUASH_OPTION_TYPE_NONE: SquashOptionType        = 0;
+pub const SQUASH_OPTION_TYPE_BOOL: SquashOptionType        = 1;
+pub const SQUASH_OPTION_TYPE_STRING: SquashOptionType      = 2;
+pub const SQUASH_OPTION_TYPE_INT: SquashOptionType         = 3;
+pub const SQUASH_OPTION_TYPE_SIZE: SquashOptionType        = 4;
+
+pub const SQUASH_OPTION_TYPE_ENUM_STRING: SquashOptionType = (0x10 | SQUASH_OPTION_TYPE_STRING);
+pub const SQUASH_OPTION_TYPE_ENUM_INT: SquashOptionType    = (0x10 | SQUASH_OPTION_TYPE_INT);
+
+pub const SQUASH_OPTION_TYPE_RANGE_INT: SquashOptionType   = (0x20 | SQUASH_OPTION_TYPE_INT);
+pub const SQUASH_OPTION_TYPE_RANGE_SIZE: SquashOptionType  = (0x20 | SQUASH_OPTION_TYPE_SIZE);
 
 #[repr(C)]
 pub struct SquashOptions {
