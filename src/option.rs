@@ -113,6 +113,7 @@ impl SquashOptionInfoUnion {
         ::std::mem::transmute(raw.offset(0))
     }
 }
+
 extern {
     pub fn squash_options_new(codec: *mut SquashCodec, ...) -> *mut SquashOptions;
     pub fn squash_options_newa(
@@ -145,4 +146,36 @@ extern {
         codec: *mut SquashCodec,
         destroy_notify: SquashDestroyNotify);
     pub fn squash_options_destroy(options: *mut c_void);
+}
+
+#[cfg(feature = "wide-char-api")]
+use libc::wchar_t;
+#[cfg(feature = "wide-char-api")]
+extern {
+    pub fn squash_options_neww(codec: *mut SquashCodec, ...) -> *mut SquashOptions;
+    pub fn squash_options_newaw(
+        codec: *mut SquashCodec,
+        keys: *const *const wchar_t,
+        values: *const *const wchar_t) -> *mut SquashOptions;
+    pub fn squash_options_get_stringw(
+        options: *mut SquashOptions,
+        key: *const wchar_t) -> *const c_char;
+    pub fn squash_options_get_boolw(
+        options: *mut SquashOptions,
+        key: *const wchar_t) -> u8;
+    pub fn squash_options_get_intw(
+        options: *mut SquashOptions,
+        key: *const wchar_t) -> c_int;
+    pub fn squash_options_get_sizew(
+        options: *mut SquashOptions,
+        key: *const wchar_t) -> size_t;
+    pub fn squash_options_parsew(options: *mut SquashOptions, ...) -> SquashStatus;
+    pub fn squash_options_parseaw(
+        options: *mut SquashOptions,
+        keys: *const *const wchar_t,
+        values: *const *const wchar_t) -> SquashStatus;
+    pub fn squash_options_parse_optionw(
+        options: *mut SquashOptions,
+        key: *const wchar_t,
+        value: *const wchar_t) -> SquashStatus;
 }

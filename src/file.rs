@@ -54,3 +54,23 @@ extern {
     pub fn squash_file_write_unlocked(file: *mut SquashFile, uncompressed_size: size_t, uncompressed: *const uint8_t) -> SquashStatus;
     pub fn squash_file_flush_unlocked(file: *mut SquashFile) -> SquashStatus;
 }
+
+#[cfg(feature = "wide-char-api")]
+use libc::wchar_t;
+#[cfg(feature = "wide-char-api")]
+extern {
+    pub fn squash_file_wopen(
+        codec: *mut SquashCodec,
+        filename: *const wchar_t,
+        mode: *const wchar_t,
+        ...) -> *mut SquashFile;
+    pub fn squash_file_wopen_with_options(
+        codec: *mut SquashCodec,
+        filename: *const wchar_t,
+        mode: *const wchar_t,
+        options: *mut SquashOptions) -> *mut SquashFile;
+    pub fn squash_file_wprintf(
+        file: *mut SquashFile,
+        format: *const wchar_t,
+        ...) -> SquashStatus;
+}
