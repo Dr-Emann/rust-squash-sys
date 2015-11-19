@@ -1,11 +1,11 @@
-use libc::{c_uint, c_void};
+use libc::{c_int, c_uint, c_void};
 
 pub type SquashDestroyNotify = Option<extern fn(*mut c_void)>;
 
 #[repr(C)]
 pub struct SquashObject {
     pub ref_count: c_uint,
-    pub is_floating: bool,
+    pub is_floating: c_int,
     pub destroy_notify: SquashDestroyNotify,
 }
 
