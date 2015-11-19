@@ -37,14 +37,15 @@ mod test {
     #[test]
     fn test_xz_round_trip() {
         let codec = b"xz\0";
+        let codec = unsafe { squash_get_codec(codec.as_ptr() as *const c_char) };
         let uncompressed = include_bytes!("/bin/bash");
-        let mut compressed_size = unsafe { squash_get_max_compressed_size(codec.as_ptr() as *const c_char, uncompressed.len() as size_t) };
+        let mut compressed_size = unsafe { squash_codec_get_max_compressed_size(codec, uncompressed.len()) };
         let mut compressed = Vec::with_capacity(compressed_size as usize);
         let mut decompressed_size = uncompressed.len() as size_t;
         let mut decompressed = Vec::with_capacity(decompressed_size as usize);
 
         assert_eq!(SQUASH_OK, unsafe {
-            squash_compress(codec.as_ptr() as *const c_char,
+            squash_codec_compress(codec,
                             &mut compressed_size,
                             compressed.as_mut_ptr(),
                             uncompressed.len() as size_t,
@@ -54,7 +55,7 @@ mod test {
 
         unsafe { compressed.set_len(compressed_size as usize); }
         assert_eq!(SQUASH_OK, unsafe {
-            squash_decompress(codec.as_ptr() as *const c_char,
+            squash_codec_decompress(codec,
                               &mut decompressed_size,
                               decompressed.as_mut_ptr(),
                               compressed.len() as size_t,

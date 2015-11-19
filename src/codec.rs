@@ -163,39 +163,4 @@ extern {
         codec: *mut SquashCodec,
         options: *mut SquashOptions,
         index: size_t) -> size_t;
-    pub fn squash_get_max_compressed_size(
-        codec: *const c_char,
-        uncompressed_size: size_t) -> size_t;
-    pub fn squash_get_uncompressed_size(
-        codec: *const c_char,
-        compressed_size: size_t,
-        compressed: *const uint8_t) -> size_t;
-    pub fn squash_compress(
-        codec: *const c_char,
-        compressed_size: *mut size_t,
-        compressed: *mut uint8_t,
-        uncompressed_size: size_t,
-        uncompressed: *const uint8_t, ...) -> SquashStatus;
-    pub fn squash_compress_with_options(
-        codec: *const c_char,
-        compressed_size: *mut size_t,
-        compressed: *mut uint8_t,
-        uncompressed_size: size_t,
-        uncompressed: *const uint8_t,
-        options: *mut SquashOptions) -> SquashStatus;
-    pub fn squash_decompress(
-        codec: *const c_char,
-        decompressed_size: *mut size_t,
-        decompressed: *mut uint8_t,
-        compressed_size: size_t,
-        compressed: *const uint8_t, ...) -> SquashStatus;
-    pub fn squash_decompress_with_options(
-        codec: *const c_char,
-        decompressed_size: *mut size_t,
-        decompressed: *mut uint8_t,
-        compressed_size: size_t,
-        compressed: *const uint8_t,
-        options: *mut SquashOptions) -> SquashStatus;
-    pub fn squash_get_info(codec: *const c_char) -> SquashCodecInfo;
-    pub fn squash_get_option_info(codec: *const c_char) -> *const SquashOptionInfo;
 }

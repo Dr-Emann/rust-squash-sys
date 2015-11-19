@@ -5,6 +5,7 @@ use codec::SquashCodec;
 use option::SquashOptions;
 use status::SquashStatus;
 
+pub use self::SquashStreamState::*;
 pub use self::SquashStreamType::*;
 pub use self::SquashOperation::*;
 
@@ -54,21 +55,14 @@ pub struct SquashStream {
 
 extern {
     pub fn squash_stream_new(
-        codec: *const c_char,
+        codec: *mut SquashCodec,
         stream_type: SquashStreamType, ...) -> *mut SquashStream;
     pub fn squash_stream_newa(
-        codec: *const c_char,
+        codec: *mut SquashCodec,
         stream_type: SquashStreamType,
         keys: *const *const c_char,
         values: *const *const c_char) -> *mut SquashStream;
     pub fn squash_stream_new_with_options(
-        codec: *const c_char,
-        stream_type: SquashStreamType,
-        options: *mut SquashOptions) -> *mut SquashStream;
-    pub fn squash_stream_new_codec(
-        codec: *mut SquashCodec,
-        stream_type: SquashStreamType, ...) -> *mut SquashStream;
-    pub fn squash_stream_new_codec_with_options(
         codec: *mut SquashCodec,
         stream_type: SquashStreamType,
         options: *mut SquashOptions) -> *mut SquashStream;
