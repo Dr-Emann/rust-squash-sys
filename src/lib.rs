@@ -16,6 +16,7 @@ pub mod version;
 pub mod file;
 pub mod context;
 pub mod splice;
+pub mod memory;
 
 pub use object::*;
 pub use codec::*;
@@ -28,6 +29,7 @@ pub use version::*;
 pub use file::*;
 pub use context::*;
 pub use splice::*;
+pub use memory::*;
 
 #[cfg(test)]
 mod test {

@@ -1,4 +1,5 @@
 use libc::{c_void, c_int, c_uint, c_char, size_t, uint8_t};
+use context::SquashContext;
 use status::SquashStatus;
 use plugin::SquashPlugin;
 use option::{SquashOptions,SquashOptionInfo};
@@ -88,6 +89,7 @@ extern {
     pub fn squash_codec_get_name(codec: *mut SquashCodec) -> *const c_char;
     pub fn squash_codec_get_priority(codec: *mut SquashCodec) -> c_uint;
     pub fn squash_codec_get_plugin(codec: *mut SquashCodec) -> *mut SquashPlugin;
+    pub fn squash_codec_get_context(codec: *mut SquashCodec) -> *mut SquashContext;
     pub fn squash_codec_get_extension(codec: *mut SquashCodec) -> *const c_char;
     pub fn squash_codec_get_uncompressed_size(
         codec: *mut SquashCodec,
