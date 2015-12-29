@@ -18,3 +18,4 @@ pkg-config = "0.3"
 
 [features]
 wide-char-api = []
+nightly = []
