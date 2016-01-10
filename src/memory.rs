@@ -1,4 +1,3 @@
-use context::SquashContext;
 use libc::c_void;
 
 #[repr(C)]
@@ -13,12 +12,9 @@ pub struct SquashMemoryFuncs {
 
 extern {
     pub fn squash_set_memory_functions(memfn: SquashMemoryFuncs);
-    pub fn squash_malloc(ctx: *mut SquashContext, size: usize) -> *mut c_void;
-    pub fn squash_realloc(ctx: *mut SquashContext, ptr: *mut c_void, size: usize) -> *mut c_void;
-    pub fn squash_free(ctx: *mut SquashContext, ptr: *mut c_void);
-    pub fn squash_aligned_alloc(
-        ctx: *mut SquashContext,
-        alignment: usize,
-        size: usize) -> *mut c_void;
-    pub fn squash_aligned_free(ctx: *mut SquashContext, ptr: *mut c_void);
+    pub fn squash_malloc(size: usize) -> *mut c_void;
+    pub fn squash_realloc(ptr: *mut c_void, size: usize) -> *mut c_void;
+    pub fn squash_free(ptr: *mut c_void);
+    pub fn squash_aligned_alloc(alignment: usize, size: usize) -> *mut c_void;
+    pub fn squash_aligned_free(ptr: *mut c_void);
 }
