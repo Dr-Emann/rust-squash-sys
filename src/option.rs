@@ -161,6 +161,22 @@ extern {
     pub fn squash_options_get_size_at(
         options: *mut SquashOptions,
         index: usize) -> usize;
+    pub fn squash_options_set_string(
+        options: *mut SquashOptions,
+        key: *const c_char,
+        value: *const c_char) -> SquashStatus;
+    pub fn squash_options_set_bool(
+        options: *mut SquashOptions,
+        key: *const c_char,
+        value: bool) -> SquashStatus;
+    pub fn squash_options_set_int(
+        options: *mut SquashOptions,
+        key: *const c_char,
+        value: c_int) -> SquashStatus;
+    pub fn squash_options_set_size(
+        options: *mut SquashOptions,
+        key: *const c_char,
+        value: usize) -> SquashStatus;
     pub fn squash_options_parse(options: *mut SquashOptions, ...) -> SquashStatus;
     pub fn squash_options_parsea(
         options: *mut SquashOptions,
