@@ -133,36 +133,4 @@ extern {
         options: *mut SquashOptions) -> SquashStatus;
     pub fn squash_codec_get_info(codec: *mut SquashCodec) -> SquashCodecInfo;
     pub fn squash_codec_get_option_info(codec: *mut SquashCodec) -> *const SquashOptionInfo;
-    pub fn squash_codec_get_option_string(
-        codec: *mut SquashCodec,
-        options: *mut SquashOptions,
-        key: *const c_char) -> *const c_char;
-    pub fn squash_codec_get_option_bool(
-        codec: *mut SquashCodec,
-        options: *mut SquashOptions,
-        key: *const c_char) -> u8;
-    pub fn squash_codec_get_option_int(
-        codec: *mut SquashCodec,
-        options: *mut SquashOptions,
-        key: *const c_char) -> c_int;
-    pub fn squash_codec_get_option_size(
-        codec: *mut SquashCodec,
-        options: *mut SquashOptions,
-        key: *const c_char) -> size_t;
-    pub fn squash_codec_get_option_string_index(
-        codec: *mut SquashCodec,
-        options: *mut SquashOptions,
-        index: size_t) -> *const c_char;
-    pub fn squash_codec_get_option_bool_index(
-        codec: *mut SquashCodec,
-        options: *mut SquashOptions,
-        index: size_t) -> u8;
-    pub fn squash_codec_get_option_int_index(
-        codec: *mut SquashCodec,
-        options: *mut SquashOptions,
-        index: size_t) -> c_int;
-    pub fn squash_codec_get_option_size_index(
-        codec: *mut SquashCodec,
-        options: *mut SquashOptions,
-        index: size_t) -> size_t;
 }
