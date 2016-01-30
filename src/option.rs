@@ -139,27 +139,35 @@ extern {
         values: *const *const c_char) -> *mut SquashOptions;
     pub fn squash_options_get_string(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         key: *const c_char) -> *const c_char;
     pub fn squash_options_get_bool(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         key: *const c_char) -> bool;
     pub fn squash_options_get_int(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         key: *const c_char) -> c_int;
     pub fn squash_options_get_size(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         key: *const c_char) -> size_t;
     pub fn squash_options_get_string_at(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         index: usize) -> *const c_char;
     pub fn squash_options_get_bool_at(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         index: usize) -> bool;
     pub fn squash_options_get_int_at(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         index: usize) -> c_int;
     pub fn squash_options_get_size_at(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         index: usize) -> usize;
     pub fn squash_options_set_string(
         options: *mut SquashOptions,
@@ -220,15 +228,19 @@ extern {
         values: *const *const wchar_t) -> *mut SquashOptions;
     pub fn squash_options_get_stringw(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         key: *const wchar_t) -> *const c_char;
     pub fn squash_options_get_boolw(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         key: *const wchar_t) -> u8;
     pub fn squash_options_get_intw(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         key: *const wchar_t) -> c_int;
     pub fn squash_options_get_sizew(
         options: *mut SquashOptions,
+        codec: *mut SquashCodec,
         key: *const wchar_t) -> size_t;
     pub fn squash_options_parsew(options: *mut SquashOptions, ...) -> SquashStatus;
     pub fn squash_options_parseaw(
