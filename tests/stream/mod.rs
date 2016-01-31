@@ -90,7 +90,6 @@ fn single_byte_input() {
                 let codec_name = get_codec_name(codec);
                 
                 let mut compressed = [0u8; 8192];
-                let mut compressed_len = compressed.len();
                 let mut uncompressed = [0u8; 8192];
                 let mut uncompressed_len = uncompressed.len();
                 let mut res: SquashStatus;

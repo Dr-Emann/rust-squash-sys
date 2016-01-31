@@ -22,4 +22,9 @@ pkg-config = "0.3"
 
 [features]
 wide-char-api = []
-nightly = []
+nightly = ["lazy_static/nightly"]
+
+[lib]
+test = false
+bench = false
+doctest = false
