@@ -4,7 +4,7 @@ version = "0.8.0"
 authors = ["Zachary Dremann <dremann@gmail.com>"]
 description = "rust bindings to the squash compression library"
 keywords = ["squash", "compress", "decompress", "xz", "gzip"]
-license = "mit"
+license = "MIT/Apache-2.0"
 
 links = "libsquash0.8"
 build = "build.rs"
