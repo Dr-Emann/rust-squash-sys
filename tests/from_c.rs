@@ -1,0 +1,123 @@
+extern crate libc;
+extern crate squash_sys;
+extern crate rand;
+#[macro_use]
+extern crate lazy_static;
+
+mod stream;
+
+use std::mem;
+use std::borrow::Cow;
+use std::ffi::CStr;
+use std::cell::Cell;
+use std::io::{self, Write};
+use libc::{c_void};
+use squash_sys::{SquashMemoryFuncs, SquashCodec, SQUASH_OK,
+    squash_set_memory_functions, squash_codec_get_plugin, squash_plugin_init,
+    squash_foreach_codec, squash_codec_get_name};
+
+pub const LOREM_IPSUM: &'static [u8] = include_bytes!("data/lorem.txt");
+pub const SQUASH_PTR_TEST_INT: u64 = 0xBADC0FFEE0DDF00D;
+
+thread_local!{
+    pub static ERROR_OCCURED: Cell<bool> = Cell::new(false)
+}
+
+#[inline]
+pub fn get_codec_name(codec: *mut SquashCodec) -> Cow<'static, str> {
+    assert!(!codec.is_null());
+    let result = unsafe { squash_codec_get_name(codec) };
+    assert!(!result.is_null());
+    let result = unsafe { CStr::from_ptr(result) };
+    result.to_string_lossy()
+}
+
+pub fn set_up() {
+    use std::sync::{Once, ONCE_INIT};
+
+    static START: Once = ONCE_INIT;
+
+    START.call_once(|| {
+        unsafe {
+            squash_set_memory_functions(SquashMemoryFuncs {
+                malloc: Some(squash_test_malloc),
+                realloc: Some(squash_test_realloc),
+                calloc: Some(squash_test_calloc),
+                free: Some(squash_test_free),
+                
+                aligned_alloc: None,
+                aligned_free: None,
+            });
+        }
+    });
+    ERROR_OCCURED.with(|e| e.set(false));
+}
+
+lazy_static!{
+    pub static ref ALL_CODECS: Vec<&'static SquashCodec> = {
+        let mut vec = Vec::new();
+        
+        extern fn push_to_vec(codec: *mut SquashCodec, data: *mut c_void) {
+            unsafe {
+                let plugin = squash_codec_get_plugin(codec);
+                if squash_plugin_init(plugin) != SQUASH_OK {
+                    return;
+                }
+                let data = data as *mut Vec<&'static SquashCodec>;
+                (*data).push(&*codec);
+            }
+        }
+        
+        unsafe {
+            squash_foreach_codec(Some(push_to_vec), &mut vec as *mut Vec<_> as *mut c_void);
+        }
+        vec
+    };
+}
+
+// Can't panic, because we can't unwind into the c code that will be calling these functions
+
+extern fn squash_test_malloc(size: usize) -> *mut c_void {
+    unsafe {
+        let ptr = libc::malloc(size + mem::size_of::<u64>()) as *mut u64;
+        *ptr = SQUASH_PTR_TEST_INT;
+        return ptr.offset(1) as *mut c_void
+    }
+}
+
+extern fn squash_test_calloc(nmemb: usize, size: usize) -> *mut c_void {
+    unsafe {
+        let ptr = libc::calloc(1, (nmemb * size) + mem::size_of::<u64>()) as *mut u64;
+        *ptr = SQUASH_PTR_TEST_INT;
+        return ptr.offset(1) as *mut c_void;
+    }
+}
+
+extern fn squash_test_realloc(ptr: *mut c_void, size: usize) -> *mut c_void {
+    if ptr.is_null() {
+        return squash_test_malloc(size);
+    }
+    unsafe {
+        let real_ptr = (ptr as *mut u64).offset(-1);
+        if *real_ptr != SQUASH_PTR_TEST_INT {
+            let _ = writeln!(io::stderr(), "(*real_ptr != SQUASH_PTR_TEST_INT) ({:#x} != {:#x})", *real_ptr, SQUASH_PTR_TEST_INT);
+            ERROR_OCCURED.with(|e| e.set(true))
+        }
+        let real_ptr = libc::realloc(real_ptr as *mut c_void, size + mem::size_of::<u64>()) as *mut u64;
+        return real_ptr.offset(1) as *mut c_void;
+    }
+}
+
+extern fn squash_test_free(ptr: *mut c_void) {
+    if ptr.is_null() {
+        return;
+    }
+    unsafe {
+        let real_ptr = (ptr as *mut u64).offset(-1);
+        if *real_ptr != SQUASH_PTR_TEST_INT {
+            let _ = writeln!(io::stderr(), "(*real_ptr != SQUASH_PTR_TEST_INT) ({:#x} != {:#x})", *real_ptr, SQUASH_PTR_TEST_INT);
+            ERROR_OCCURED.with(|e| e.set(true))
+        }
+        libc::free(real_ptr as *mut c_void);
+    }
+}
