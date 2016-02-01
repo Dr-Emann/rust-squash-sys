@@ -8,7 +8,7 @@ extern crate lazy_static;
 
 mod stream;
 
-use std::mem;
+use std::{mem, ptr};
 use std::borrow::Cow;
 use std::ffi::CStr;
 use std::cell::Cell;
@@ -20,8 +20,11 @@ use squash_sys::{SquashMemoryFuncs, SquashCodec, SQUASH_OK,
 
 #[test]
 fn found_codecs() {
+    set_up();
     assert!(ALL_CODECS.len() > 0);
     println!("found {} codecs", ALL_CODECS.len());
+    
+    assert!(!ERROR_OCCURED.with(|e| e.get()), "memory error while loading codecs");
 }
 
 pub const LOREM_IPSUM: &'static [u8] = include_bytes!("data/lorem.txt");
@@ -108,8 +111,9 @@ extern fn squash_test_realloc(ptr: *mut c_void, size: usize) -> *mut c_void {
     unsafe {
         let real_ptr = (ptr as *mut u64).offset(-1);
         if *real_ptr != SQUASH_PTR_TEST_INT {
-            let _ = writeln!(io::stderr(), "(*real_ptr != SQUASH_PTR_TEST_INT) ({:#x} != {:#x})", *real_ptr, SQUASH_PTR_TEST_INT);
-            ERROR_OCCURED.with(|e| e.set(true))
+            let _ = writeln!(io::stderr(), "realloc: (*real_ptr != SQUASH_PTR_TEST_INT) ({:#x} != {:#x})", *real_ptr, SQUASH_PTR_TEST_INT);
+            ERROR_OCCURED.with(|e| e.set(true));
+            return ptr::null_mut();
         }
         let real_ptr = libc::realloc(real_ptr as *mut c_void, size + mem::size_of::<u64>()) as *mut u64;
         return real_ptr.offset(1) as *mut c_void;
@@ -123,8 +127,9 @@ extern fn squash_test_free(ptr: *mut c_void) {
     unsafe {
         let real_ptr = (ptr as *mut u64).offset(-1);
         if *real_ptr != SQUASH_PTR_TEST_INT {
-            let _ = writeln!(io::stderr(), "(*real_ptr != SQUASH_PTR_TEST_INT) ({:#x} != {:#x})", *real_ptr, SQUASH_PTR_TEST_INT);
-            ERROR_OCCURED.with(|e| e.set(true))
+            let _ = writeln!(io::stderr(), "free: (*real_ptr != SQUASH_PTR_TEST_INT) ({:#x} != {:#x})", *real_ptr, SQUASH_PTR_TEST_INT);
+            ERROR_OCCURED.with(|e| e.set(true));
+            return;
         }
         libc::free(real_ptr as *mut c_void);
     }
