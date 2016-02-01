@@ -2,9 +2,13 @@
 name = "squash-sys"
 version = "0.8.0"
 authors = ["Zachary Dremann <dremann@gmail.com>"]
-description = "rust bindings to the squash compression library"
-keywords = ["squash", "compress", "decompress", "xz", "gzip"]
+description = "sys-level bindings to the squash compression library"
+keywords = ["squash", "compress", "decompress", "uncompress", "xz", "gzip"]
+documentation = "https://dr-emann.github.io/rust-squash-sys/"
+homepage = "https://github.com/Dr-Emann/rust-squash-sys"
+repository = "https://github.com/Dr-Emann/rust-squash-sys"
 license = "MIT/Apache-2.0"
+readme = "README.markdown"
 
 links = "libsquash0.8"
 build = "build.rs"
