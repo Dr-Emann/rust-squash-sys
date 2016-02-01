@@ -71,7 +71,7 @@ lazy_static!{
         }
         
         unsafe {
-            squash_foreach_codec(Some(push_to_vec), &mut vec as *mut Vec<_> as *mut c_void);
+            squash_foreach_codec(Some(push_to_vec), &mut vec as *mut Vec<&'static SquashCodec> as *mut c_void);
         }
         vec
     };
