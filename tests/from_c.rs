@@ -18,6 +18,12 @@ use squash_sys::{SquashMemoryFuncs, SquashCodec, SQUASH_OK,
     squash_set_memory_functions, squash_codec_get_plugin, squash_plugin_init,
     squash_foreach_codec, squash_codec_get_name};
 
+#[test]
+fn found_codecs() {
+    assert!(ALL_CODECS.len() > 0);
+    println!("found {} codecs", ALL_CODECS.len());
+}
+
 pub const LOREM_IPSUM: &'static [u8] = include_bytes!("data/lorem.txt");
 pub const SQUASH_PTR_TEST_INT: u64 = 0xBADC0FFEE0DDF00D;
 
