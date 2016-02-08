@@ -5,7 +5,6 @@ use codec::SquashCodec;
 use option::SquashOptions;
 use status::SquashStatus;
 
-pub use self::SquashStreamState::*;
 pub use self::SquashStreamType::*;
 pub use self::SquashOperation::*;
 
