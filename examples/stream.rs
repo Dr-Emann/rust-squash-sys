@@ -1,8 +1,14 @@
 extern crate squash_sys;
+extern crate libc;
+
+#[macro_use]
+mod common;
 
 use std::{env, io, ptr, process};
 use std::io::prelude::*;
 use std::ffi::{CStr, CString};
+
+use libc::c_void;
 
 use squash_sys::*;
 
@@ -10,28 +16,43 @@ use squash_sys::*;
 const BUFFER_SIZE: usize = 1024 * 1024;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let return_code = real_main();
+    process::exit(return_code);
+}
+
+fn real_main() -> i32 {
     let mut stderr = io::stderr();
-    if args.len() != 3 {
-        let _ = writeln!(stderr, "USAGE: {} (c|d) CODEC", args[0]);
-        let _ = writeln!(stderr, "Input is read from stdin, output is written to stdout");
-        process::exit(1);
-    }
+    // fuse ensures it it safe to call .next() after None is returned
+    let mut args = env::args().fuse();
     
-    let stream_type = match &args[1][..] {
-        "c" => SQUASH_STREAM_COMPRESS,
-        "d" => SQUASH_STREAM_DECOMPRESS,
-        unknown_mode => {
-            let _ = writeln!(stderr, "Invalid mode '{}': must be 'c' or 'd'", unknown_mode);
-            process::exit(1);
+    let prog_name = args.next().unwrap();
+    
+    let (stream_type, codec_name) = match (args.next(), args.next()) {
+        (Some(stream_type), Some(codec_name)) => {
+            let stream_type = match &stream_type[..] {
+                "c" => SQUASH_STREAM_COMPRESS,
+                "d" => SQUASH_STREAM_DECOMPRESS,
+                unknown_mode => {
+                    let _ = writeln!(stderr, "Invalid mode '{}': must be 'c' or 'd'", unknown_mode);
+                    return 1;
+                }
+            };
+            (stream_type, codec_name)
+        }
+        _ => {
+            let _ = writeln!(stderr, "USAGE: {} (c|d) CODEC", prog_name);
+            let _ = writeln!(stderr, "Input is read from stdin, output is written to stdout");
+            return 1
         }
     };
     
-    let raw_codec_name = CString::new(args[2].as_bytes()).unwrap();
+    
+    let raw_codec_name = CString::new(codec_name.as_bytes()).unwrap();
+    
     let codec = unsafe { squash_get_codec(raw_codec_name.as_ptr()) };
     if codec.is_null() {
-        let _ = writeln!(stderr, "Unable to find algorithm '{}'.", args[2]);
-        process::exit(1);
+        let _ = writeln!(stderr, "Unable to find algorithm '{}'.", codec_name);
+        return 1;
     }
     
     let mut input = vec![0; BUFFER_SIZE];
@@ -41,8 +62,10 @@ fn main() {
     
     if stream.is_null() {
         let _ = writeln!(stderr, "Failed to create stream.");
-        process::exit(1);
+        return 1;
     }
+    
+    defer!(unsafe { squash_object_unref(stream as *mut c_void) });
     
     let stream = unsafe { &mut *stream };
     
@@ -67,7 +90,7 @@ fn main() {
             if res < 0 {
                 let reason = unsafe { CStr::from_ptr(squash_status_to_string(res)) };
                 let _ = writeln!(stderr, "Processing failed: {} ({})", reason.to_string_lossy(), res);
-                process::exit(1);
+                return 1;
             }
             
             let output_size = (stream.next_out as usize) - (output.as_ptr() as usize);
@@ -85,11 +108,11 @@ fn main() {
         if res < 0 {
             let reason = unsafe { CStr::from_ptr(squash_status_to_string(res)) };
             let _ = writeln!(stderr, "Finishing failed {} ({})", reason.to_string_lossy(), res);
-            process::exit(1);
+            return 1;
         }
         
         let output_size = (stream.next_out as usize) - (output.as_ptr() as usize);
         stdout.write_all(&output[..output_size]).unwrap();
     }
-    
+    return 0;
 }
