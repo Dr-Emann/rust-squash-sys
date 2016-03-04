@@ -6,6 +6,8 @@ use plugin::{SquashPlugin, SquashPluginForeachFunc};
 pub enum SquashContext { }
 
 extern {
+    pub fn squash_set_default_search_path(
+        search_path: *const c_char);
     pub fn squash_context_get_default() -> *mut SquashContext;
 
     pub fn squash_context_get_codec(
