@@ -1,6 +1,6 @@
 [package]
 name = "squash-sys"
-version = "0.8.2"
+version = "0.8.3"
 authors = ["Zachary Dremann <dremann@gmail.com>"]
 description = "sys-level bindings to the squash compression library"
 keywords = ["squash", "compress", "decompress", "uncompress"]

@@ -42,7 +42,6 @@ before_script:
 script:
   - |
       travis-cargo build &&
-      cargo test -- --nocapture &&
       travis-cargo test &&
       travis-cargo bench &&
       travis-cargo --only stable doc
