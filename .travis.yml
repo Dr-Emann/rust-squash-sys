@@ -18,14 +18,18 @@ rust:
   # and the first stable one (this should be bumped as the minimum
   # Rust version required changes)
   - 1.4.0
+ 
+cache:
+  directories:
+    - libsquash
 
 # load travis-cargo
 before_script:
   - |
       pip install 'travis-cargo<0.2' --user &&
       export PATH=$HOME/.local/bin:$PATH &&
-      git clone https://github.com/quixdb/squash.git libsquash &&
-      ( cd libsquash && git submodule update --init --recursive &&
+      ( [ -e libsquash/.git ] || git clone https://github.com/quixdb/squash.git libsquash ) &&
+      ( cd libsquash && git pull && git submodule update --init --recursive &&
         ./configure --disable-external --prefix=$(pwd)/../.usr --with-plugin-dir=$(pwd)/../.usr/plugins &&
         make -j6 && make install ) &&
       export LIBRARY_PATH="$(pwd)/.usr/lib${LIBRARY_PATH:+:}${LIBRARY_PATH}" &&
@@ -38,6 +42,7 @@ before_script:
 script:
   - |
       travis-cargo build &&
+      cargo test -- --nocapture &&
       travis-cargo test &&
       travis-cargo bench &&
       travis-cargo --only stable doc
