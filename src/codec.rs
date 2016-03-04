@@ -17,6 +17,7 @@ bitflags! {
         const SQUASH_CODEC_INFO_INVALID                 = 0,
         const SQUASH_CODEC_INFO_CAN_FLUSH               = 1 << 0,
         const SQUASH_CODEC_INFO_DECOMPRESS_UNSAFE       = 1 << 1,
+        const SQUASH_CODEC_INFO_WRAP_SIZE               = 1 << 2,
 
         const SQUASH_CODEC_INFO_AUTO_MASK               = 0x00ff0000,
         const SQUASH_CODEC_INFO_VALID                   = 1 << 16,
