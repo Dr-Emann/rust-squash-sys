@@ -1,6 +1,7 @@
 use libc::c_void;
 
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct SquashMemoryFuncs {
     pub malloc: Option<extern fn(size: usize) -> *mut c_void>,
     pub realloc: Option<extern fn(ptr: *mut c_void, size: usize) -> *mut c_void>,

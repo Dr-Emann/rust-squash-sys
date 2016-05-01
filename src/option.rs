@@ -56,6 +56,7 @@ pub struct SquashOptionInfoEnumInt {
 
 /// A range of potential integer values.
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct SquashOptionInfoRangeInt {
     /// minimum value for this option 
     pub min: c_int,
@@ -72,6 +73,7 @@ pub struct SquashOptionInfoRangeInt {
 
 /// A range of potential size values.
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct SquashOptionInfoRangeSize {
     /// minimum value for this option
     pub min: size_t,

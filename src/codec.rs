@@ -74,6 +74,7 @@ bitflags! {
 /// setting up the callbacks in a plugin you must set each field individually
 /// instead of copying an entire instance of the struct.
 #[repr(C)]
+#[derive(Copy, Clone)]
 pub struct SquashCodecImpl {
     /// Capability information about the codec. 
     pub info: SquashCodecInfo,
