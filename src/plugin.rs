@@ -37,6 +37,7 @@ extern {
     pub fn squash_plugin_init(plugin: *mut SquashPlugin) -> SquashStatus;
     
     /// Get the name of a plugin.
+    ///
     /// # Parameters
     /// * `plugin` The plugin.
     ///
@@ -64,6 +65,7 @@ extern {
     pub fn squash_plugin_get_codec(plugin: *mut SquashPlugin, codec: *const c_char) -> *mut SquashCodec;
 
     /// Execute a callback for every codec in the plugin.
+    /// 
     /// # Note
     /// *`func` will be invoked for all codecs supplied by this plugin, even if
     /// a higher-priority implementation exists in another plugin. If you only
