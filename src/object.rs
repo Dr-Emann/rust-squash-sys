@@ -7,6 +7,112 @@ use libc::{c_int, c_uint, c_void};
 pub type SquashDestroyNotify = Option<extern fn(*mut c_void)>;
 
 /// Reference-counting base class for other types.
+///
+/// `SquashObject` is designed to provide a
+/// lightweight reference-counted type which can
+/// be used as a base class for other types in
+/// Squash.
+///
+/// # Subclassing
+/// Subclassing `SquashObject` is relatively
+/// straightforward. The first step is to embed
+/// `SquashObject` in your object. Assuming you're
+/// inheriting directly from `SquashObject`, your
+/// code would look something like this:
+///
+/// ```
+/// use squash_sys::*;
+/// #[repr(C)]
+/// struct MyObject {
+///     base_object: SquashObject,
+///     value: *mut u32,
+/// }
+/// ```
+///
+/// If you are subclassing another type (which
+/// inherits, possibly indirectly, from
+/// `SquashObject`) then you should use that type
+/// instead.
+///
+// Next, you should to create an *_init function
+/// which takes an existing instance of your class,
+/// chains up to the *_init function provided by
+/// your base class, and initializes any fields
+/// you want initialized:
+///
+/// ```
+/// use std::mem;
+/// use squash_sys::*;
+/// # #[repr(C)]
+/// # struct MyObject {
+/// #     base_object: SquashObject,
+/// #     value: *mut u32,
+/// # }
+/// extern fn my_object_init(obj: *mut MyObject,
+///                          value: u32,
+///                          destroy_notify: SquashDestroyNotify) {
+///     unsafe {
+///         squash_object_init(obj as *mut _, false, destroy_notify);
+///         (*obj).value = squash_malloc(mem::size_of::<u32>()) as *mut u32;
+///         (*(*obj).value) = value;
+///     }
+/// }
+/// ```
+///
+/// Of course, whatever is created must be destroyed,so you'll also want to
+/// create a *_destroy method to be called when the reference count reaches
+/// 0. Destroy any of your fields first, then chain up to the base class'
+/// *_destroy function:
+///
+/// ```
+/// use squash_sys::*;
+/// # #[repr(C)]
+/// # struct MyObject {
+/// #     base_object: SquashObject,
+/// #     value: *mut u32,
+/// # }
+/// extern fn my_object_destroy(obj: *mut MyObject) {
+///     unsafe {
+///         if (*obj).value.is_null() {
+///             squash_free((*obj).value as *mut _)
+///         }
+///         squash_object_destroy(obj as *mut _);
+///     }
+/// }
+/// ```
+///
+/// If your class is not abstract (it is meant to be instantiated, not just
+/// subclassed), you should create a constructor:
+///
+/// ```
+/// # extern crate squash_sys;
+/// extern crate libc;
+/// use squash_sys::*;
+/// use std::mem;
+/// # fn main() {}
+/// # #[repr(C)]
+/// # struct MyObject {
+/// #     base_object: SquashObject,
+/// #     value: *mut u32,
+/// # }
+/// # extern fn my_object_init(obj: *mut MyObject,
+/// #                          value: u32,
+/// #                          destroy_notify: SquashDestroyNotify) {
+/// #     unsafe {
+/// #         squash_object_init(obj as *mut _, false, destroy_notify);
+/// #         (*obj).value = squash_malloc(mem::size_of::<u32>()) as *mut u32;
+/// #         (*(*obj).value) = value;
+/// #     }
+/// # }
+/// # extern fn my_object_free(obj: *mut libc::c_void) { }
+/// extern fn my_object_new(value: u32) -> *mut MyObject {
+///      unsafe {
+///          let obj = squash_malloc(mem::size_of::<MyObject>()) as *mut MyObject;
+///          my_object_init(obj, value, Some(my_object_free));
+///          obj
+///      }
+/// }
+/// ```
 #[repr(C)]
 pub struct SquashObject {
     /// The reference count.
