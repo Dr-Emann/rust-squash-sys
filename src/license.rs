@@ -2,7 +2,7 @@ use libc::{c_int, c_char};
 
 bitflags! {
     #[repr(C)]
-    flags SquashLicense: c_int {
+    pub flags SquashLicense: c_int {
         const SQUASH_LICENSE_UNKNOWN       = 0,
 
         const SQUASH_LICENSE_PERMISSIVE      = 0x01 << 24,

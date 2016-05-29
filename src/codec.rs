@@ -18,7 +18,7 @@ bitflags! {
     ///
     /// This is a bitmask describing characteristics and features of the codec.
     #[repr(C)]
-    flags SquashCodecInfo: c_int {
+    pub flags SquashCodecInfo: c_int {
         /// Invalid codec.
         const SQUASH_CODEC_INFO_INVALID                 = 0,
         
