@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 export PATH=$HOME/.local/bin:$PATH
-git clone https://github.com/quixdb/squash.git libsquash
+git clone https://github.com/quixdb/squash.git libsquash --depth=1
 pushd libsquash || exit $?
-git pull && git submodule update --init --recursive || exit $?
+git pull && git submodule update --init --recursive --depth=1 || exit $?
 ./configure --disable-external --prefix="$HOME/.usr" --with-plugin-dir="$HOME/.usr/plugins" || exit $?
 make -j6 || exit $?
 make install || exit $?
