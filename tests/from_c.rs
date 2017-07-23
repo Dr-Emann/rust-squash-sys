@@ -8,12 +8,12 @@ extern crate lazy_static;
 
 mod stream;
 
+use std::os::raw::c_void;
 use std::{mem, ptr};
 use std::borrow::Cow;
 use std::ffi::CStr;
 use std::cell::Cell;
 use std::io::{self, Write};
-use libc::{c_void};
 use squash_sys::{SquashMemoryFuncs, SquashCodec, SQUASH_OK,
     squash_set_memory_functions, squash_codec_get_plugin, squash_plugin_init,
     squash_foreach_codec, squash_codec_get_name};
@@ -35,11 +35,11 @@ thread_local!{
 }
 
 #[inline]
-pub fn get_codec_name(codec: *mut SquashCodec) -> Cow<'static, str> {
+pub unsafe fn get_codec_name(codec: *mut SquashCodec) -> Cow<'static, str> {
     assert!(!codec.is_null());
-    let result = unsafe { squash_codec_get_name(codec) };
+    let result = squash_codec_get_name(codec);
     assert!(!result.is_null());
-    let result = unsafe { CStr::from_ptr(result) };
+    let result = CStr::from_ptr(result);
     result.to_string_lossy()
 }
 
@@ -115,7 +115,7 @@ extern fn squash_test_realloc(ptr: *mut c_void, size: usize) -> *mut c_void {
             ERROR_OCCURED.with(|e| e.set(true));
             return ptr::null_mut();
         }
-        let real_ptr = libc::realloc(real_ptr as *mut c_void, size + mem::size_of::<u64>()) as *mut u64;
+        let real_ptr = libc::realloc(real_ptr as *mut libc::c_void, size + mem::size_of::<u64>()) as *mut u64;
         return real_ptr.offset(1) as *mut c_void;
     }
 }
@@ -131,6 +131,6 @@ extern fn squash_test_free(ptr: *mut c_void) {
             ERROR_OCCURED.with(|e| e.set(true));
             return;
         }
-        libc::free(real_ptr as *mut c_void);
+        libc::free(real_ptr as *mut libc::c_void);
     }
 }

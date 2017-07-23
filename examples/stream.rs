@@ -1,5 +1,4 @@
 extern crate squash_sys;
-extern crate libc;
 
 #[macro_use]
 mod common;
@@ -8,10 +7,7 @@ use std::{env, io, ptr, process};
 use std::io::prelude::*;
 use std::ffi::{CStr, CString};
 
-use libc::c_void;
-
 use squash_sys::*;
-
 
 const BUFFER_SIZE: usize = 1024 * 1024;
 
@@ -65,7 +61,7 @@ fn real_main() -> i32 {
         return 1;
     }
     
-    defer!(unsafe { squash_object_unref(stream as *mut c_void) });
+    defer!(unsafe { squash_object_unref(stream as *mut std::os::raw::c_void) });
     
     let stream = unsafe { &mut *stream };
     

@@ -1,5 +1,5 @@
 use std::{cmp, ptr};
-use libc::c_void;
+use std::os::raw::c_void;
 use rand::{Rng, thread_rng};
 use squash_sys::*;
 

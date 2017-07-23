@@ -1,6 +1,6 @@
 [package]
 name = "squash-sys"
-version = "0.9.0"
+version = "0.10.0"
 authors = ["Zachary Dremann <dremann@gmail.com>"]
 description = "sys-level bindings to the squash compression library"
 keywords = ["squash", "compress", "decompress", "uncompress"]
@@ -14,21 +14,16 @@ links = "libsquash0.8"
 build = "build.rs"
 
 [dependencies]
-libc = "0.2"
-bitflags = "0.7"
 
 [dev-dependencies]
 rand = "0.3"
+libc = "0.2"
 lazy_static = "0.2"
 
 [build-dependencies]
 pkg-config = "0.3"
+bindgen = "0.26.3"
 
 [features]
 wide-char-api = []
 nightly = ["lazy_static/nightly"]
-
-[lib]
-test = false
-bench = false
-doctest = true
