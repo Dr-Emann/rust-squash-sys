@@ -14,8 +14,8 @@ main() {
         return
     fi
 
-    # cargo test
-    # cargo test --release
+    cargo test
+    cargo test --release
 
     # cross test --target $TARGET
     # cross test --target $TARGET --release
