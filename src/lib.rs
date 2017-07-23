@@ -3,4 +3,8 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+extern crate libc;
+
+pub use libc::FILE;
+
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));

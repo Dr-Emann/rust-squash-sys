@@ -27,9 +27,9 @@ fn main() {
 
         .opaque_type("SquashObject")
         .opaque_type("va_list")
-        .opaque_type("FILE")
 
         .hide_type(".*_$")
+        .hide_type("FILE")
 
         .generate_comments(true)
         .unstable_rust(cfg!(feature = "nightly"))

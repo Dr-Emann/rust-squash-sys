@@ -24,3 +24,8 @@
 struct my_va_list {
 	va_list inner
 };
+
+/**
+ * <div rustbindgen replaces="FILE"></div>
+ */
+struct my_file;
