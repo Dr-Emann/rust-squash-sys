@@ -4,9 +4,9 @@ export PATH=$HOME/.local/bin:$PATH
 git clone https://github.com/quixdb/squash.git libsquash --depth=1
 pushd libsquash || exit $?
 git pull && git submodule update --init --recursive || exit $?
-./configure --disable-external --prefix="$HOME/.usr" --with-plugin-dir="$HOME/.usr/plugins" || exit $?
-make -j6 || exit $?
-make install || exit $?
+CC=ccache ./configure --disable-external --prefix="$HOME/.usr" --with-plugin-dir="$HOME/.usr/plugins" || exit $?
+CC=ccache make -j6 || exit $?
+CC=ccache make install || exit $?
 popd
 
 export LIBRARY_PATH="$HOME/.usr/lib${LIBRARY_PATH:+:}${LIBRARY_PATH}"
