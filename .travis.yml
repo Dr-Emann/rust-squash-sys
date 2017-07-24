@@ -16,7 +16,7 @@ matrix:
     - env: TARGET=x86_64-unknown-linux-gnu
       rust: nightly
     - env: TARGET=x86_64-unknown-linux-gnu
-      rust: 1.12.0
+      rust: 1.13.0
 
 before_install: set -e
 
