@@ -11,7 +11,7 @@ main() {
     cargo build --release
 
     echo "$TRAVIS_RUST_VERSION"
-    if [ "$TRAVIS_RUST_VERSION" -eq "nightly" ]; then
+    if [ "$TRAVIS_RUST_VERSION" == "nightly" ]; then
         cargo build --features=nightly
     fi
 
@@ -21,7 +21,7 @@ main() {
 
     cargo test
     cargo test --release
-    if [ "$TRAVIS_RUST_VERSION" -eq "nightly" ]; then
+    if [ "$TRAVIS_RUST_VERSION" == "nightly" ]; then
         cargo test --features=nightly
         cargo test --release --features=nightly
     fi
