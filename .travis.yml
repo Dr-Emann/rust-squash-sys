@@ -1,10 +1,6 @@
-# Based on the "trust" template v0.1.1
-# https://github.com/japaric/trust/tree/v0.1.1
-
 dist: trusty
 language: rust
-services: docker
-sudo: required
+sudo: false
 
 env:
   global:
@@ -13,47 +9,23 @@ env:
 matrix:
   include:
     # Linux
-    # - env: TARGET=i686-unknown-linux-gnu
-    # - env: TARGET=i686-unknown-linux-musl
     - env: TARGET=x86_64-unknown-linux-gnu
-    # - env: TARGET=x86_64-unknown-linux-musl
-
-    # OSX
-    # - env: TARGET=i686-apple-darwin
-    # os: osx
-    # - env: TARGET=x86_64-apple-darwin
-    # os: osx
-
-    # *BSD
-    # - env: TARGET=i686-unknown-freebsd DISABLE_TESTS=1
-    # - env: TARGET=x86_64-unknown-freebsd DISABLE_TESTS=1
-    # - env: TARGET=x86_64-unknown-netbsd DISABLE_TESTS=1
-
-    # Other architectures
-    # - env: TARGET=aarch64-unknown-linux-gnu
-    # - env: TARGET=armv7-unknown-linux-gnueabihf
-    # - env: TARGET=mips-unknown-linux-gnu
-    # - env: TARGET=mips64-unknown-linux-gnuabi64
-    # - env: TARGET=mips64el-unknown-linux-gnuabi64
-    # - env: TARGET=mipsel-unknown-linux-gnu
-    # - env: TARGET=powerpc-unknown-linux-gnu
-    # - env: TARGET=powerpc64-unknown-linux-gnu
-    # - env: TARGET=powerpc64le-unknown-linux-gnu
-    # - env: TARGET=s390x-unknown-linux-gnu DISABLE_TESTS=1
+    - env: TARGET=x86_64-unknown-linux-musl
+    - env: TARGET=x86_64-apple-darwin
+      os: osx
 
     # Testing other channels
-    # - env: TARGET=x86_64-unknown-linux-gnu
-    # rust: nightly
-    # - env: TARGET=x86_64-unknown-linux-gnu
-    # rust: 1.8.0
-    # - env: TARGET=x86_64-apple-darwin
-    # os: osx
-    # rust: nightly
+    - env: TARGET=x86_64-unknown-linux-gnu
+      rust: nightly
+    - env: TARGET=x86_64-unknown-linux-gnu
+      rust: 1.8.0
+    - env: TARGET=x86_64-apple-darwin
+      os: osx
+      rust: nightly
 
 before_install: set -e
 
 install:
-  - sh ci/install.sh
   - source ci/install_squash.sh
   - source ~/.cargo/env || true
 
@@ -61,24 +33,6 @@ script:
   - bash ci/script.sh
 
 after_script: set +e
-
-before_deploy:
-  - sh ci/before_deploy.sh
-
-deploy:
-  api_key:
-    secure: mrdJiSedNuZNsttqHgcOkdXFA5F2QSc/FCa3vC+vX34VyZZmSsHtDYa+hxl+ZA2ISF5jYwZKm5Dq9i6g3c0db/9yqOUR2zTpWc5Wgx0zhZ4fQ/lrR7i+bDO/tEED+pgN8gyJZFhIbopjT7n+c9tEI0GIIgIFOAZ6MCXv7xke2o3CgE9TB1XCDagAOXetfoad8ZvTCjpAclokT4r+boSuLaJnNqJ++/SVUKBniVveUqv4H1Ma1vet4d6kLYMSWpbeWfBkC/fO0t596CvZoX/7frJrR+toEGmOSHmxY7m7DF0kOyKM/8b0lP1LBKXuPpLRQP+c9+vAGjw7QfmfQ6DIH8mpLsUqW/daL2kfbzDaN9s2z9TFKHnuLR/vWbZhaF9I/s1qJ3qjx4RVqztcPWLMJvQzmdzY66oExvu7pMv/CbXLn+NX4yUZsrX5n65s+75jMoD5ewp2g/ijTRhVt5Oi5QRPdBjkvWvs3GlbE82g2eIZ04x97Hvxhf1Ek6GYiAjE+USuss5ibdy7bDU4BXXD3UTmsMN1mXjJxb0v7XUmcAflVz7aVhodiDpzynPnuDP6bI2yG+gTY0t734lPu2ChQ58JTMn7YWVUbLcpDUqYxBFozhdWLgMiQef6VGATG8qJEsD/CbpQbcuGYCqsq/E/1ZUMGMfFEyMxY9CF89tGKDg=
-  file_glob: true
-  file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
-  on:
-    # TODO Here you can pick which targets will generate binary releases
-    # In this example, there are some targets that are tested using the stable
-    # and nightly channels. This condition makes sure there is only one release
-    # for such targets and that's generated using the stable channel
-    condition: $DEPLOY = never
-    tags: true
-  provider: releases
-  skip_cleanup: true
 
 cache: 
   - cargo
@@ -92,7 +46,3 @@ branches:
     # release tags
     - /^v\d+\.\d+\.\d+.*$/
     - master
-
-notifications:
-  email:
-    on_success: never
