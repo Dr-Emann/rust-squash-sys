@@ -3,8 +3,7 @@
 export PATH=$HOME/.local/bin:$PATH
 git clone https://github.com/quixdb/squash.git libsquash --depth=1
 pushd libsquash || exit $?
-git submodule update --init --recursive plugins/lzma/xz || exit $?
-git submodule update --init --recursive --depth=1 || exit $?
+git submodule update --init --recursive || exit $?
 PATH=/usr/lib/ccache ./configure --disable-external --prefix="$HOME/.usr" --with-plugin-dir="$HOME/.usr/plugins" || exit $?
 PATH=/usr/lib/ccache make -j6 || exit $?
 PATH=/usr/lib/ccache make install || exit $?
