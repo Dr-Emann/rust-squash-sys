@@ -25,7 +25,7 @@ fn compress() {
                 
                 let mut compressed_len = compressed.len();
                 let res = buffer_to_buffer_compress_with_stream(codec, &mut compressed_len, compressed.as_mut_ptr(), uncompressed.len(), uncompressed.as_ptr());
-                assert!(res == SQUASH_OK, "{} failed to compress", codec_name);
+                assert_eq!(res, SQUASH_OK, "{} failed to compress", codec_name);
                 
                 let mut uncompressed_len = uncompressed.len();
                 let res = squash_codec_decompress(
@@ -34,11 +34,10 @@ fn compress() {
                     compressed_len, compressed.as_ptr(),
                     ptr::null::<c_void>()
                 );
-                assert!(res == SQUASH_OK, "{} failed to decompress", codec_name);
+                assert_eq!(res, SQUASH_OK, "{} failed to decompress", codec_name);
                 
-                assert!(uncompressed_len == LOREM_IPSUM.len(),
-                    "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
-                assert!(&uncompressed[..uncompressed_len] == LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
+                assert_eq!(uncompressed_len, LOREM_IPSUM.len(), "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
+                assert_eq!(&uncompressed[..uncompressed_len], LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
                 
                 assert!(!error_occurred.get(), "Memory error for Codec: {}", codec_name);
             }
@@ -64,7 +63,7 @@ fn decompress() {
                 let mut compressed = vec![0u8; compressed_len];
                 
                 let res = squash_codec_compress(codec, &mut compressed_len, compressed.as_mut_ptr(), LOREM_IPSUM.len(), LOREM_IPSUM.as_ptr(), ptr::null::<c_void>());
-                assert!(res == SQUASH_OK, "{} failed to compress", codec_name);
+                assert_eq!(res, SQUASH_OK, "{} failed to compress", codec_name);
                 
                 let mut uncompressed_len =
                     if (squash_codec_get_info(codec) & SQUASH_CODEC_INFO_KNOWS_UNCOMPRESSED_SIZE) == SQUASH_CODEC_INFO_KNOWS_UNCOMPRESSED_SIZE {
@@ -72,15 +71,13 @@ fn decompress() {
                     } else {
                         LOREM_IPSUM.len()
                     };
-                assert!(uncompressed_len == LOREM_IPSUM.len(),
-                        "{} reported the wrong uncompressed size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
+                assert_eq!(uncompressed_len, LOREM_IPSUM.len(), "{} reported the wrong uncompressed size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
                 let mut uncompressed = vec![0u8; uncompressed_len];
                 
                 let res = buffer_to_buffer_decompress_with_stream(codec, &mut uncompressed_len, uncompressed.as_mut_ptr(), compressed_len, compressed.as_ptr());
-                assert!(res == SQUASH_OK, "{} failed to decompress", codec_name);
-                assert!(uncompressed_len == LOREM_IPSUM.len(),
-                    "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
-                assert!(&uncompressed[..uncompressed_len] == LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
+                assert_eq!(res, SQUASH_OK, "{} failed to decompress", codec_name);
+                assert_eq!(uncompressed_len, LOREM_IPSUM.len(), "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
+                assert_eq!(&uncompressed[..uncompressed_len], LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
                 
                 assert!(!error_occurred.get(), "Memory error for Codec: {}", codec_name);
             }
@@ -134,9 +131,8 @@ fn single_byte_input() {
                 res = squash_codec_decompress(codec, &mut uncompressed_len, uncompressed.as_mut_ptr(), stream.total_out, compressed.as_ptr(), ptr::null::<c_void>());
                 assert!(res == SQUASH_OK, "{} failed to decompress", codec_name);
                 
-                assert!(uncompressed_len == LOREM_IPSUM.len(),
-                    "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
-                assert!(&uncompressed[..uncompressed_len] == LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
+                assert_eq!(uncompressed_len, LOREM_IPSUM.len(), "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
+                assert_eq!(&uncompressed[..uncompressed_len], LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
                 
                 assert!(!error_occurred.get(), "Memory error for Codec: {}", codec_name);
                 
@@ -151,7 +147,7 @@ fn single_byte_input() {
                         stream.avail_out = 1;
                         res = squash_stream_process(stream);
                     }
-                    assert!(res == SQUASH_OK, "{} failed to compress", codec_name);
+                    assert_eq!(res, SQUASH_OK, "{} failed to compress", codec_name);
                 }
                 
                 res = SQUASH_PROCESSING;
@@ -160,16 +156,15 @@ fn single_byte_input() {
                     stream.avail_out = 1;
                     res = squash_stream_finish(stream);
                 }
-                assert!(res == SQUASH_OK, "{} failed to compress", codec_name);
+                assert_eq!(res, SQUASH_OK, "{} failed to compress", codec_name);
                 uncompressed_len = LOREM_IPSUM.len();
                 res = squash_codec_decompress(codec, &mut uncompressed_len, uncompressed.as_mut_ptr(), stream.total_out, compressed.as_ptr(), ptr::null::<c_void>());
-                assert!(res == SQUASH_OK, "{} failed to decompress", codec_name);
+                assert_eq!(res, SQUASH_OK, "{} failed to decompress", codec_name);
                 
                 squash_object_unref(stream as *mut SquashStream as *mut c_void);
                 
-                assert!(uncompressed_len == LOREM_IPSUM.len(),
-                    "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
-                assert!(&uncompressed[..uncompressed_len] == LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
+                assert_eq!(uncompressed_len, LOREM_IPSUM.len(), "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
+                assert_eq!(&uncompressed[..uncompressed_len], LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
                 
                 assert!(!error_occurred.get(), "Memory error for Codec: {}", codec_name);
             }
