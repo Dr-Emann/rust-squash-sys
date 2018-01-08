@@ -18,23 +18,26 @@ fn main() {
 
         .bitfield_enum("SquashCodecInfo")
         .bitfield_enum("SquashLicense")
-        .constified_enum("SquashOperation")
-        .constified_enum("SquashOptionType")
-        .constified_enum("SquashStatus")
-        .constified_enum("SquashStreamState")
-        .constified_enum("SquashStreamType")
         .prepend_enum_name(false)
 
         .opaque_type("SquashObject")
-        .opaque_type("va_list")
 
-        .hide_type(".*_$")
-        .hide_type("FILE")
+        .blacklist_type("va_list")
+        .blacklist_type(".*_$")
+        .blacklist_type("FILE")
+        // Blacklist_type blacklists functions too. See https://github.com/rust-lang-nursery/rust-bindgen/issues/1142
+        .blacklist_type("^squash.*vw?$")
+        .blacklist_type(".*vw?printf.*")
 
         .generate_comments(true)
-        .unstable_rust(cfg!(feature = "nightly"))
-        .whitelisted_function("squash.*")
-        .whitelisted_type("Squash.*");
+
+        .rust_target(if cfg!(feature = "nightly") {
+            bindgen::RustTarget::Nightly
+        } else {
+            bindgen::RustTarget::Stable_1_19
+        })
+        .whitelist_function("squash.*")
+        .whitelist_type("Squash.*");
     for lib in library.libs {
         bindings = bindings.link(lib);
     }
