@@ -1,5 +1,5 @@
 macro_rules! defer {
-    ($code:stmt) => {
+    ($code:expr) => {
         let _cleanup = {
             struct Cleanup<F: FnMut()>(F);
             impl<F: FnMut()> Drop for Cleanup<F> {
