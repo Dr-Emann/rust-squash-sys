@@ -3,7 +3,7 @@ use squash_sys::*;
 use std::os::raw::c_void;
 use std::{cmp, ptr};
 
-use {get_codec_name, set_up, ALL_CODECS, ERROR_OCCURED, LOREM_IPSUM};
+use super::{get_codec_name, set_up, ALL_CODECS, ERROR_OCCURED, LOREM_IPSUM};
 
 #[test]
 fn compress() {

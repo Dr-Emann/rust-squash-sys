@@ -1,5 +1,3 @@
-extern crate squash_sys;
-
 use std::ffi::{CStr, CString};
 use std::io::prelude::*;
 use std::{env, io, process, ptr};

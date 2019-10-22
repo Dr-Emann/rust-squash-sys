@@ -1,9 +1,3 @@
-extern crate libc;
-extern crate rand;
-extern crate squash_sys;
-#[macro_use]
-extern crate lazy_static;
-
 mod stream;
 
 use squash_sys::*;
@@ -13,6 +7,7 @@ use std::ffi::CStr;
 use std::io::{self, Write};
 use std::os::raw::c_void;
 use std::{mem, ptr};
+use lazy_static::lazy_static;
 
 #[test]
 fn found_codecs() {
@@ -20,6 +15,9 @@ fn found_codecs() {
     assert!(ALL_CODECS.len() > 0);
     println!("found {} codecs", ALL_CODECS.len());
 
+    for &codec in ALL_CODECS.iter() {
+        println!("found codec: {}", unsafe { get_codec_name(&*codec as *const _ as *mut _) });
+    }
     assert!(
         !ERROR_OCCURED.with(|e| e.get()),
         "memory error while loading codecs"
