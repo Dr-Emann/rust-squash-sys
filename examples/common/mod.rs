@@ -7,7 +7,9 @@ macro_rules! defer {
                     (self.0)();
                 }
             }
-            Cleanup(move || { $code; })
+            Cleanup(move || {
+                $code;
+            })
         };
-    }
+    };
 }

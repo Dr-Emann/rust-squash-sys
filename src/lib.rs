@@ -4,17 +4,18 @@
 
 extern crate libc;
 
-pub use libc::{FILE, wchar_t};
+pub use libc::{wchar_t, FILE};
 
 use libc::c_uint;
 
 include!("bindings.rs");
 
 /// Current version, encoded as a single number
-pub const SQUASH_VERSION_CURRENT: c_uint =
-    SQUASH_VERSION(SQUASH_VERSION_MAJOR as u8,
-                   SQUASH_VERSION_MINOR as u8,
-                   SQUASH_VERSION_REVISION as u8);
+pub const SQUASH_VERSION_CURRENT: c_uint = SQUASH_VERSION(
+    SQUASH_VERSION_MAJOR as u8,
+    SQUASH_VERSION_MINOR as u8,
+    SQUASH_VERSION_REVISION as u8,
+);
 
 /// Encode the major, minor, and revisions into a single number
 ///
