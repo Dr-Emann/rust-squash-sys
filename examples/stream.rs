@@ -26,8 +26,8 @@ fn real_main() -> i32 {
     let (stream_type, codec_name) = match (args.next(), args.next()) {
         (Some(stream_type), Some(codec_name)) => {
             let stream_type = match &stream_type[..] {
-                "c" => SQUASH_STREAM_COMPRESS,
-                "d" => SQUASH_STREAM_DECOMPRESS,
+                "c" => SquashStreamType::SQUASH_STREAM_COMPRESS,
+                "d" => SquashStreamType::SQUASH_STREAM_DECOMPRESS,
                 unknown_mode => {
                     let _ = writeln!(stderr, "Invalid mode '{}': must be 'c' or 'd'", unknown_mode);
                     return 1;
@@ -69,7 +69,7 @@ fn real_main() -> i32 {
     let mut stdin = stdin.lock();
     let stdout = io::stdout();
     let mut stdout = stdout.lock();
-    let mut res: SquashStatus;
+    let mut res: SquashStatus::Type;
     loop {
         let input_len = stdin.read(&mut input).unwrap();
         if input_len == 0 { break; }
@@ -77,8 +77,8 @@ fn real_main() -> i32 {
         stream.next_in = input.as_ptr();
         stream.avail_in = input_len;
         
-        res = SQUASH_PROCESSING;
-        while res == SQUASH_PROCESSING {
+        res = SquashStatus::SQUASH_PROCESSING;
+        while res == SquashStatus::SQUASH_PROCESSING {
             stream.next_out = output.as_mut_ptr();
             stream.avail_out = BUFFER_SIZE;
             
@@ -94,8 +94,8 @@ fn real_main() -> i32 {
         }
     }
     
-    res = SQUASH_PROCESSING;
-    while res == SQUASH_PROCESSING {
+    res = SquashStatus::SQUASH_PROCESSING;
+    while res == SquashStatus::SQUASH_PROCESSING {
         stream.next_out = output.as_mut_ptr();
         stream.avail_out = BUFFER_SIZE;
         

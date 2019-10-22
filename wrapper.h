@@ -15,17 +15,14 @@
 #define SquashPlugin_ SquashPlugin
 #define SquashStreamPrivate_ SquashStreamPrivate
 #define SquashStream_ SquashStream
+#define __uint8_t uint8_t
 
 #include "squash-0.8/squash.h"
 
 /**
  * <div rustbindgen replaces="va_list"></div>
+ * <div rustbindgen opaque></div>
  */
 struct my_va_list {
-	va_list inner
+       va_list inner;
 };
-
-/**
- * <div rustbindgen replaces="FILE"></div>
- */
-struct my_file;

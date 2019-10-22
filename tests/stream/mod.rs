@@ -25,7 +25,7 @@ fn compress() {
                 
                 let mut compressed_len = compressed.len();
                 let res = buffer_to_buffer_compress_with_stream(codec, &mut compressed_len, compressed.as_mut_ptr(), uncompressed.len(), uncompressed.as_ptr());
-                assert_eq!(res, SQUASH_OK, "{} failed to compress", codec_name);
+                assert_eq!(res, SquashStatus::SQUASH_OK, "{} failed to compress", codec_name);
                 
                 let mut uncompressed_len = uncompressed.len();
                 let res = squash_codec_decompress(
@@ -34,7 +34,7 @@ fn compress() {
                     compressed_len, compressed.as_ptr(),
                     ptr::null::<c_void>()
                 );
-                assert_eq!(res, SQUASH_OK, "{} failed to decompress", codec_name);
+                assert_eq!(res, SquashStatus::SQUASH_OK, "{} failed to decompress", codec_name);
                 
                 assert_eq!(uncompressed_len, LOREM_IPSUM.len(), "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
                 assert_eq!(&uncompressed[..uncompressed_len], LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
@@ -63,10 +63,10 @@ fn decompress() {
                 let mut compressed = vec![0u8; compressed_len];
                 
                 let res = squash_codec_compress(codec, &mut compressed_len, compressed.as_mut_ptr(), LOREM_IPSUM.len(), LOREM_IPSUM.as_ptr(), ptr::null::<c_void>());
-                assert_eq!(res, SQUASH_OK, "{} failed to compress", codec_name);
+                assert_eq!(res, SquashStatus::SQUASH_OK, "{} failed to compress", codec_name);
                 
                 let mut uncompressed_len =
-                    if (squash_codec_get_info(codec) & SQUASH_CODEC_INFO_KNOWS_UNCOMPRESSED_SIZE) == SQUASH_CODEC_INFO_KNOWS_UNCOMPRESSED_SIZE {
+                    if (squash_codec_get_info(codec) & SquashCodecInfo::SQUASH_CODEC_INFO_KNOWS_UNCOMPRESSED_SIZE) == SquashCodecInfo::SQUASH_CODEC_INFO_KNOWS_UNCOMPRESSED_SIZE {
                         squash_codec_get_uncompressed_size(codec, compressed_len, compressed.as_ptr())
                     } else {
                         LOREM_IPSUM.len()
@@ -75,7 +75,7 @@ fn decompress() {
                 let mut uncompressed = vec![0u8; uncompressed_len];
                 
                 let res = buffer_to_buffer_decompress_with_stream(codec, &mut uncompressed_len, uncompressed.as_mut_ptr(), compressed_len, compressed.as_ptr());
-                assert_eq!(res, SQUASH_OK, "{} failed to decompress", codec_name);
+                assert_eq!(res, SquashStatus::SQUASH_OK, "{} failed to decompress", codec_name);
                 assert_eq!(uncompressed_len, LOREM_IPSUM.len(), "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
                 assert_eq!(&uncompressed[..uncompressed_len], LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
                 
@@ -103,63 +103,63 @@ fn single_byte_input() {
                 let mut compressed = [0u8; 8192];
                 let mut uncompressed = [0u8; 8192];
                 let mut uncompressed_len = uncompressed.len();
-                let mut res: SquashStatus;
+                let mut res: SquashStatus::Type;
                 
-                let stream = &mut *squash_codec_create_stream(codec, SQUASH_STREAM_COMPRESS, ptr::null::<c_void>());
+                let stream = &mut *squash_codec_create_stream(codec, SquashStreamType::SQUASH_STREAM_COMPRESS, ptr::null::<c_void>());
                 stream.next_out = compressed.as_mut_ptr();
                 stream.avail_out = compressed.len();
                 stream.next_in = LOREM_IPSUM.as_ptr();
                 while stream.total_in < LOREM_IPSUM.len() {
                     stream.avail_in = 1;
-                    res = SQUASH_PROCESSING;
-                    while res == SQUASH_PROCESSING {
+                    res = SquashStatus::SQUASH_PROCESSING;
+                    while res == SquashStatus::SQUASH_PROCESSING {
                         assert!(stream.avail_out != 0, "{} ran out of room compressing", codec_name);
                         res = squash_stream_process(stream);
                     }
                     
-                    assert!(res == SQUASH_OK, "{} failed to compress", codec_name);
+                    assert!(res == SquashStatus::SQUASH_OK, "{} failed to compress", codec_name);
                 }
                 
-                res = SQUASH_PROCESSING;
-                while res == SQUASH_PROCESSING {
+                res = SquashStatus::SQUASH_PROCESSING;
+                while res == SquashStatus::SQUASH_PROCESSING {
                     res = squash_stream_finish(stream);
                 }
-                assert!(res == SQUASH_OK, "{} failed to compress", codec_name);
+                assert!(res == SquashStatus::SQUASH_OK, "{} failed to compress", codec_name);
                 
                 squash_object_unref(stream as *mut SquashStream as *mut c_void);
                 
                 res = squash_codec_decompress(codec, &mut uncompressed_len, uncompressed.as_mut_ptr(), stream.total_out, compressed.as_ptr(), ptr::null::<c_void>());
-                assert!(res == SQUASH_OK, "{} failed to decompress", codec_name);
+                assert!(res == SquashStatus::SQUASH_OK, "{} failed to decompress", codec_name);
                 
                 assert_eq!(uncompressed_len, LOREM_IPSUM.len(), "{} decompressed to the wrong size ({} should be {})", codec_name, uncompressed_len, LOREM_IPSUM.len());
                 assert_eq!(&uncompressed[..uncompressed_len], LOREM_IPSUM, "{} decompressed to the wrong data", codec_name);
                 
                 assert!(!error_occurred.get(), "Memory error for Codec: {}", codec_name);
                 
-                let stream = &mut *squash_codec_create_stream(codec, SQUASH_STREAM_COMPRESS, ptr::null::<c_void>());
+                let stream = &mut *squash_codec_create_stream(codec, SquashStreamType::SQUASH_STREAM_COMPRESS, ptr::null::<c_void>());
                 stream.next_out = compressed.as_mut_ptr();
                 stream.avail_in = LOREM_IPSUM.len();
                 stream.next_in = LOREM_IPSUM.as_ptr();
                 while stream.total_in < LOREM_IPSUM.len() {
-                    res = SQUASH_PROCESSING;
-                    while res == SQUASH_PROCESSING {
+                    res = SquashStatus::SQUASH_PROCESSING;
+                    while res == SquashStatus::SQUASH_PROCESSING {
                         assert!(stream.total_out < compressed.len());
                         stream.avail_out = 1;
                         res = squash_stream_process(stream);
                     }
-                    assert_eq!(res, SQUASH_OK, "{} failed to compress", codec_name);
+                    assert_eq!(res, SquashStatus::SQUASH_OK, "{} failed to compress", codec_name);
                 }
                 
-                res = SQUASH_PROCESSING;
-                while res == SQUASH_PROCESSING {
+                res = SquashStatus::SQUASH_PROCESSING;
+                while res == SquashStatus::SQUASH_PROCESSING {
                     assert!(stream.total_out < compressed.len());
                     stream.avail_out = 1;
                     res = squash_stream_finish(stream);
                 }
-                assert_eq!(res, SQUASH_OK, "{} failed to compress", codec_name);
+                assert_eq!(res, SquashStatus::SQUASH_OK, "{} failed to compress", codec_name);
                 uncompressed_len = LOREM_IPSUM.len();
                 res = squash_codec_decompress(codec, &mut uncompressed_len, uncompressed.as_mut_ptr(), stream.total_out, compressed.as_ptr(), ptr::null::<c_void>());
-                assert_eq!(res, SQUASH_OK, "{} failed to decompress", codec_name);
+                assert_eq!(res, SquashStatus::SQUASH_OK, "{} failed to decompress", codec_name);
                 
                 squash_object_unref(stream as *mut SquashStream as *mut c_void);
                 
@@ -177,19 +177,19 @@ fn buffer_to_buffer_compress_with_stream<'a> (
         compressed_len: *mut usize,
         compressed: *mut u8,
         uncompressed_len: usize,
-        uncompressed: *const u8) -> SquashStatus {
+        uncompressed: *const u8) -> SquashStatus::Type {
     let mut rng = thread_rng();
     let step_size = rng.gen_range(64, 255);
     unsafe {
-        let stream = &mut *squash_codec_create_stream(codec, SQUASH_STREAM_COMPRESS, ptr::null::<c_void>());
+        let stream = &mut *squash_codec_create_stream(codec, SquashStreamType::SQUASH_STREAM_COMPRESS, ptr::null::<c_void>());
         stream.next_out = compressed;
         stream.avail_out = cmp::min(step_size, *compressed_len);
         stream.next_in = uncompressed;
-        let mut res = SQUASH_PROCESSING;
+        let mut res = SquashStatus::SQUASH_PROCESSING;
         while stream.total_in < uncompressed_len {
             stream.avail_in = cmp::min(uncompressed_len - stream.total_in, step_size);
-            res = SQUASH_PROCESSING;
-            while res == SQUASH_PROCESSING {
+            res = SquashStatus::SQUASH_PROCESSING;
+            while res == SquashStatus::SQUASH_PROCESSING {
                 res = squash_stream_process(stream);
                 
                 if stream.avail_out < step_size {
@@ -197,16 +197,16 @@ fn buffer_to_buffer_compress_with_stream<'a> (
                 }
             }
         }
-        assert_eq!(res, SQUASH_OK);
+        assert_eq!(res, SquashStatus::SQUASH_OK);
         
-        res = SQUASH_PROCESSING;
-        while res == SQUASH_PROCESSING {
+        res = SquashStatus::SQUASH_PROCESSING;
+        while res == SquashStatus::SQUASH_PROCESSING {
             stream.avail_out = cmp::min(*compressed_len - stream.total_out, step_size);
             
             res = squash_stream_finish(stream);
         }
         
-        if res == SQUASH_OK {
+        if res == SquashStatus::SQUASH_OK {
             *compressed_len = stream.total_out;
         }
         
@@ -221,38 +221,38 @@ fn buffer_to_buffer_decompress_with_stream (
         decompressed_len: *mut usize,
         decompressed: *mut u8,
         compressed_len: usize,
-        compressed: *const u8) -> SquashStatus {
+        compressed: *const u8) -> SquashStatus::Type {
     let mut rng = thread_rng();
     let step_size = rng.gen_range(64, 255);
     unsafe {
-        let stream = &mut *squash_codec_create_stream(codec, SQUASH_STREAM_DECOMPRESS, ptr::null::<c_void>());
+        let stream = &mut *squash_codec_create_stream(codec, SquashStreamType::SQUASH_STREAM_DECOMPRESS, ptr::null::<c_void>());
         stream.next_out = decompressed;
         stream.avail_out = cmp::min(step_size, *decompressed_len);
         stream.next_in = compressed;
         
-        let mut res = SQUASH_OK;
+        let mut res = SquashStatus::SQUASH_OK;
         while stream.total_in < compressed_len && stream.avail_out < *decompressed_len {
             stream.avail_in = cmp::min(compressed_len - stream.total_in, step_size);
             stream.avail_out = cmp::min(*decompressed_len - stream.total_out, step_size);
             
             res = squash_stream_process(stream);
-            if res == SQUASH_END_OF_STREAM || res < 0 {
+            if res == SquashStatus::SQUASH_END_OF_STREAM || res < 0 {
                 break;
             }
         }
         
-        if res == SQUASH_END_OF_STREAM {
-            res = SQUASH_OK;
+        if res == SquashStatus::SQUASH_END_OF_STREAM {
+            res = SquashStatus::SQUASH_OK;
         } else if res > 0 {
-            res = SQUASH_PROCESSING;
-            while res == SQUASH_PROCESSING {
+            res = SquashStatus::SQUASH_PROCESSING;
+            while res == SquashStatus::SQUASH_PROCESSING {
                 stream.avail_in = cmp::min(compressed_len - stream.total_in, step_size);
                 stream.avail_out = cmp::min(*decompressed_len - stream.total_out, step_size);
                 res = squash_stream_finish(stream);
             }
         }
         
-        if res == SQUASH_OK {
+        if res == SquashStatus::SQUASH_OK {
             *decompressed_len = stream.total_out;
         }
         

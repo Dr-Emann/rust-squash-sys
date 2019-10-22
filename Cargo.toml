@@ -1,17 +1,14 @@
 [package]
 name = "squash-sys"
-version = "0.10.0"
+version = "1.0.0"
 authors = ["Zachary Dremann <dremann@gmail.com>"]
 description = "sys-level bindings to the squash compression library"
 keywords = ["squash", "compress", "decompress", "uncompress"]
-documentation = "https://dr-emann.github.io/rust-squash-sys/"
-homepage = "https://github.com/Dr-Emann/rust-squash-sys"
 repository = "https://github.com/Dr-Emann/rust-squash-sys"
 license = "MIT/Apache-2.0"
 readme = "README.markdown"
 
 links = "libsquash0.8"
-build = "build.rs"
 
 [dependencies]
 libc = "0.2"
@@ -22,8 +19,7 @@ libc = "0.2"
 lazy_static = "1.4"
 
 [build-dependencies]
-pkg-config = "0.3"
-bindgen = "0.32.1"
+pkg-config = "0.3.16"
 
 [features]
 wide-char-api = []

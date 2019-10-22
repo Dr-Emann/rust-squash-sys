@@ -12,9 +12,7 @@ use std::borrow::Cow;
 use std::ffi::CStr;
 use std::cell::Cell;
 use std::io::{self, Write};
-use squash_sys::{SquashMemoryFuncs, SquashCodec, SQUASH_OK,
-    squash_set_memory_functions, squash_codec_get_plugin, squash_plugin_init,
-    squash_foreach_codec, squash_codec_get_name};
+use squash_sys::*;
 
 #[test]
 fn found_codecs() {
@@ -42,9 +40,9 @@ pub unsafe fn get_codec_name(codec: *mut SquashCodec) -> Cow<'static, str> {
 }
 
 pub fn set_up() {
-    use std::sync::{Once, ONCE_INIT};
+    use std::sync::Once;
 
-    static START: Once = ONCE_INIT;
+    static START: Once = Once::new();
 
     START.call_once(|| {
         unsafe {
@@ -69,7 +67,7 @@ lazy_static!{
         extern fn push_to_vec(codec: *mut SquashCodec, data: *mut c_void) {
             unsafe {
                 let plugin = squash_codec_get_plugin(codec);
-                if squash_plugin_init(plugin) != SQUASH_OK {
+                if squash_plugin_init(plugin) != SquashStatus::SQUASH_OK {
                     return;
                 }
                 let data = data as *mut Vec<&'static SquashCodec>;

@@ -47,7 +47,7 @@ fn real_main() -> i32 {
                               ptr::null::<u8>())
     };
     
-    if res != SQUASH_OK {
+    if res != SquashStatus::SQUASH_OK {
         let reason = unsafe { CStr::from_ptr(squash_status_to_string(res)) };
         let _ = writeln!(stderr, "Unable to compress data [{}]: {}", res, reason.to_string_lossy());
         return 1;
@@ -63,7 +63,7 @@ fn real_main() -> i32 {
     };
     
     
-    if res != SQUASH_OK {
+    if res != SquashStatus::SQUASH_OK {
         let reason = unsafe { CStr::from_ptr(squash_status_to_string(res)) };
         let _ = writeln!(stderr, "Unable to decompress data [{}]: {}", res, reason.to_string_lossy());
         return 1;
