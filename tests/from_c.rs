@@ -1,5 +1,6 @@
 mod stream;
 
+use lazy_static::lazy_static;
 use squash_sys::*;
 use std::borrow::Cow;
 use std::cell::Cell;
@@ -7,7 +8,6 @@ use std::ffi::CStr;
 use std::io::{self, Write};
 use std::os::raw::c_void;
 use std::{mem, ptr};
-use lazy_static::lazy_static;
 
 #[test]
 fn found_codecs() {
@@ -16,7 +16,7 @@ fn found_codecs() {
     println!("found {} codecs", ALL_CODECS.len());
 
     for &codec in ALL_CODECS.iter() {
-        println!("found codec: {}", unsafe { get_codec_name(&*codec as *const _ as *mut _) });
+        println!("found codec: {}", get_codec_name(codec));
     }
     assert!(
         !ERROR_OCCURED.with(|e| e.get()),
@@ -32,11 +32,10 @@ thread_local! {
 }
 
 #[inline]
-pub unsafe fn get_codec_name(codec: *mut SquashCodec) -> Cow<'static, str> {
-    assert!(!codec.is_null());
-    let result = squash_codec_get_name(codec);
+pub fn get_codec_name(codec: &SquashCodec) -> Cow<'static, str> {
+    let result = unsafe { squash_codec_get_name(codec as *const SquashCodec as *mut SquashCodec) };
     assert!(!result.is_null());
-    let result = CStr::from_ptr(result);
+    let result = unsafe { CStr::from_ptr(result) };
     result.to_string_lossy()
 }
 
@@ -45,6 +44,7 @@ pub fn set_up() {
 
     static START: Once = Once::new();
 
+    ERROR_OCCURED.with(|e| e.set(false));
     START.call_once(|| unsafe {
         squash_set_memory_functions(SquashMemoryFuncs {
             malloc: Some(squash_test_malloc),
@@ -56,7 +56,10 @@ pub fn set_up() {
             aligned_free: None,
         });
     });
-    ERROR_OCCURED.with(|e| e.set(false));
+    assert!(
+        !ERROR_OCCURED.with(|e| e.get()),
+        "error occurred in setting memory functions"
+    );
 }
 
 lazy_static! {
